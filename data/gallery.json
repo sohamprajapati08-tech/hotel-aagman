@@ -1,0 +1,110 @@
+[
+  {
+    "id": "gal-1",
+    "title": "Hotel Aagaman Welcome Experience Video",
+    "category": "Hotel Ambience",
+    "type": "video",
+    "url": "vidio.mp4",
+    "desc": "Take a virtual walkthrough of Hotel Aagaman exterior, entrance, and reception.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-2",
+    "title": "Executive Suite Bedding & Comfort",
+    "category": "Rooms & Suites",
+    "type": "image",
+    "url": "room.jpeg",
+    "desc": "Spacious and luxurious executive suite with modern climate control.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-3",
+    "title": "Authentic Kathiyawadi Gujarati Thali",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "gujrati tahli.jfif",
+    "desc": "Pure vegetarian Kathiyawadi feast with 2 sabzi, phulka roti, dal-bhat, and sweet.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-4",
+    "title": "Deluxe Punjabi Thali Feast",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "panjabi tjhali.jfif",
+    "desc": "North Indian delicacy with paneer, dal makhani, butter naan, and raita.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-5",
+    "title": "Royal Rajasthani Feast",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "rj thali.jfif",
+    "desc": "Traditional Dal Baati Churma, Ker Sangri, and Bajra Roti with pure desi ghee.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-6",
+    "title": "Crispy South Indian Dosa Platter",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "WhatsApp Image 2026-03-02 at 3.57.38 PM (1).jpeg",
+    "desc": "Fresh crispy dosa, idli, and medu vada served with coconut chutney and piping hot sambhar.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-7",
+    "title": "Rich Paneer Butter Masala",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "WhatsApp Image 2026-03-02 at 3.57.41 PM.jpeg",
+    "desc": "Creamy tomato cashew gravy with soft fresh paneer cubes.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-8",
+    "title": "Clay Oven Tandoori Roti",
+    "category": "Dining & Cuisine",
+    "type": "image",
+    "url": "WhatsApp Image 2026-03-02 at 3.57.40 PM (1).jpeg",
+    "desc": "Freshly baked whole wheat flatbread brushed with butter.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-9",
+    "title": "Chilled Desi Masala Chaas",
+    "category": "Beverages",
+    "type": "image",
+    "url": "WhatsApp Image 2026-03-02 at 3.57.39 PM.jpeg",
+    "desc": "Roasted cumin, mint, and rock salt buttermilk.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-10",
+    "title": "Family Restaurant Hall Ambience",
+    "category": "Facility & Ambience",
+    "type": "image",
+    "url": "WhatsApp Image 2026-01-31 at 3.39.29 PM.jpeg",
+    "desc": "Clean and spacious dining hall for families and group travelers.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-11",
+    "title": "Courteous Staff & Service",
+    "category": "Hospitality",
+    "type": "image",
+    "url": "WhatsApp Image 2026-01-31 at 3.39.28 PM.jpeg",
+    "desc": "Always ready to assist guests 24/7 with a warm smile.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "id": "gal-12",
+    "title": "Single Standard AC Room",
+    "category": "Rooms & Suites",
+    "type": "image",
+    "url": "WhatsApp Image 2026-03-04 at 6.01.20 PM.jpeg",
+    "desc": "Cozy single room with attached bath and Wi-Fi.",
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  }
+]

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Aagaman - Visual Photo & Video Gallery</title>
+    <!-- Meta SEO -->
+    <meta name="description" content="Explore photos and videos of Hotel Aagaman, Kheralu. View AC rooms, pure vegetarian dining hall, authentic food, and luxury ambiance.">
+    
+    <!-- Bootstrap & AOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Glassmorphism Theme -->
+    <link rel="stylesheet" href="glass.css">
+
+    <style>
+        .gallery-hero {
+            padding: 130px 20px 30px;
+            text-align: center;
+        }
+
+        .gallery-filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            padding: 0 15px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: #F5F0E6;
+            border-color: var(--primary);
+        }
+
+        .gallery-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 25px;
+            padding: 0 20px 80px;
+        }
+
+        .gallery-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            height: 260px;
+            cursor: pointer;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-glass);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-card:hover img {
+            transform: scale(1.12);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(46, 71, 61, 0.92) 0%, rgba(46, 71, 61, 0.2) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-card:hover .gallery-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(46, 71, 61, 0.98) 0%, rgba(46, 71, 61, 0.4) 60%, transparent 100%);
+        }
+
+        .gallery-caption-title {
+            color: #F5F0E6;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .gallery-caption-cat {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Lightbox Modal */
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(46, 71, 61, 0.96);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+
+        .lightbox-modal.active {
+            display: flex;
+        }
+
+        .lightbox-img-wrapper {
+            max-width: 900px;
+            max-height: 85vh;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .lightbox-img-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- AMBIENT GLOW -->
+    <div class="ambient-glow-wrapper">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <div class="page-content">
+        <!-- FLOATING GLASS NAVBAR -->
+        <header class="glass-nav" id="mainNav">
+            <a href="index.html" class="nav-brand">
+                <span>HOTEL</span> AAGAMAN
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link-item">Home</a>
+                <a href="room buking page.html" class="nav-link-item">Room Booking</a>
+                <a href="menu.html" class="nav-link-item">Menu & Dining</a>
+                <a href="gallary.html" class="nav-link-item active">Gallery</a>
+                <a href="about.html" class="nav-link-item">About Us</a>
+                <a href="contact.html" class="nav-link-item">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <div id="navAuthContainer">
+                    <button class="btn-glass-primary btn-glass-sm" onclick="HotelAuth.showModal()">
+                        Login
+                    </button>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation">&#9776;</button>
+            </div>
+        </header>
+
+        <!-- GALLERY HERO -->
+        <section class="gallery-hero" data-aos="fade-down">
+            <div class="hero-badge" style="display:inline-block; margin-bottom:12px;">Visual Tour</div>
+            <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                Photo Gallery & Experiences
+            </h1>
+            <p style="color:var(--text-secondary); font-size:1.05rem; max-width:600px; margin:0 auto 30px;">
+                Take a visual journey through our boutique suites, hygienic dining hall, Kathiyawadi cuisine, and welcoming spaces.
+            </p>
+
+            <!-- FILTERS -->
+            <div class="gallery-filters" id="galleryFilters">
+                <button class="filter-btn active" onclick="filterGallery('All')">All Moments</button>
+                <button class="filter-btn" onclick="filterGallery('Hotel Ambience')">Hotel & Video</button>
+                <button class="filter-btn" onclick="filterGallery('Rooms & Suites')">Rooms & Suites</button>
+                <button class="filter-btn" onclick="filterGallery('Dining & Cuisine')">Dishes & Dining</button>
+                <button class="filter-btn" onclick="filterGallery('Hospitality')">Staff & Service</button>
+            </div>
+        </section>
+
+        <!-- GALLERY GRID (Loaded from /api/gallery) -->
+        <div class="gallery-grid" id="galleryContainer">
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px;">
+                Loading live photo & video gallery...
+            </div>
+        </div>
+
+        <!-- LIGHTBOX MODAL (Supports both Image & Video playback) -->
+        <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox(event)">
+            <button class="glass-modal-close" onclick="closeLightbox()" style="position:fixed; top:30px; right:30px; z-index:1000001;">&times;</button>
+            <div class="lightbox-img-wrapper" id="lightboxWrapper">
+                <img id="lightboxImg" src="" alt="Enlarged view" style="display:none;">
+                <video id="lightboxVideo" src="" controls autoplay style="display:none; width:100%; max-height:80vh;"></video>
+                <div style="background:rgba(46,71,61,0.95); padding:15px 25px; border-top:1px solid rgba(245,240,230,0.2);">
+                    <h4 style="color:#F5F0E6; margin:0;" id="lightboxTitle">Photo</h4>
+                    <p style="color:rgba(245,240,230,0.8); font-size:0.85rem; margin-top:4px;" id="lightboxDesc"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLASS FOOTER -->
+        <footer class="glass-footer">
+            <div class="glass-footer-grid">
+                <div>
+                    <h3 style="color:#fff; font-size:1.5rem; margin-bottom:15px;">HOTEL <span style="color:var(--accent);">AAGAMAN</span></h3>
+                    <p style="color:rgba(245, 240, 230, 0.8); line-height:1.7; font-size:0.95rem; margin-bottom:15px;">
+                        Capturing the spirit of luxury stays, delicious food, and hospitable memories in Kheralu.
+                    </p>
+                    <div style="color:rgba(245, 240, 230, 0.85); font-size:0.9rem; line-height: 1.8;">
+                        +91 6353848203<br>
+                        hotelaagaman08@gmail.com
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="room buking page.html">Room Booking</a>
+                    <a href="menu.html">Dining & Menu</a>
+                    <a href="gallary.html">Photo Gallery</a>
+                    <a href="about.html">About Hotel</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+
+                <div>
+                    <h4>Special Facilities</h4>
+                    <a href="room buking page.html">24/7 Room Service</a>
+                    <a href="room buking page.html">Air Conditioned Rooms</a>
+                    <a href="menu.html">Pure Veg Restaurant</a>
+                    <a href="room buking page.html">Free High-Speed Wi-Fi</a>
+                </div>
+
+                <div>
+                    <h4>Management</h4>
+                    <div style="color:#fff; font-weight:600; margin-bottom:8px;">Soham Prajapati</div>
+                    <div style="color:rgba(245, 240, 230, 0.75); font-size:0.85rem; line-height: 1.6;">
+                        Vrundavan Circle, Ambaji Highway, Kheralu - 384325
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-copyright">
+                © 2026 Hotel Aagaman. All Rights Reserved. Luxury Boutique Experience.
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="auth.js"></script>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('navLinks');
+            if (nav) nav.classList.toggle('show');
+        }
+
+        let allGalleryMedia = [];
+        let currentFilter = 'All';
+
+        async function fetchGallery() {
+            const container = document.getElementById('galleryContainer');
+            try {
+                let data = null;
+                try {
+                    const res = await fetch('/api/gallery');
+                    const contentType = res.headers.get('content-type') || '';
+                    if (res.ok && contentType.includes('application/json')) {
+                        data = await res.json();
+                    }
+                } catch (e) {}
+
+                if (!data || !data.gallery) {
+                    const staticRes = await fetch('data/gallery.json');
+                    const staticData = await staticRes.json();
+                    data = { gallery: staticData };
+                }
+
+                allGalleryMedia = data.gallery || [];
+                renderGallery();
+            } catch (err) {
+                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Failed to load gallery media.</div>';
+            }
+        }
+        fetchGallery();
+
+        function filterGallery(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(category.toLowerCase()) || (category === 'All' && btn.textContent.includes('All')));
+            });
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('galleryContainer');
+            const filtered = currentFilter === 'All'
+                ? allGalleryMedia
+                : allGalleryMedia.filter(m => m.category === currentFilter || m.category.includes(currentFilter));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">No media found in this category.</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(m => {
+                const isVid = m.type === 'video';
+                return `
+                <div class="glass-card gallery-card" data-aos="fade-up" onclick='openLightbox(${JSON.stringify(m).replace(/'/g, "&apos;")})'>
+                    ${isVid 
+                        ? `<video src="${m.url}" style="width:100%; height:100%; object-fit:cover;" muted loop></video>`
+                        : `<img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.src='food.jpg'">`
+                    }
+                    <div class="gallery-overlay">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span class="gallery-caption-cat">${m.category}</span>
+                            <span style="background:${isVid ? 'var(--primary-gradient)' : 'rgba(255,255,255,0.15)'}; color:#fff; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:99px;">
+                                ${isVid ? '▶ VIDEO' : 'PHOTO'}
+                            </span>
+                        </div>
+                        <div class="gallery-caption-title">${m.title}</div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Lightbox
+        function openLightbox(media) {
+            const imgEl = document.getElementById('lightboxImg');
+            const vidEl = document.getElementById('lightboxVideo');
+            const isVid = media.type === 'video';
+
+            if (isVid) {
+                imgEl.style.display = 'none';
+                vidEl.src = media.url;
+                vidEl.style.display = 'block';
+            } else {
+                vidEl.pause();
+                vidEl.style.display = 'none';
+                imgEl.src = media.url;
+                imgEl.style.display = 'block';
+            }
+
+            document.getElementById('lightboxTitle').textContent = media.title;
+            document.getElementById('lightboxDesc').textContent = media.desc || '';
+            document.getElementById('lightboxModal').classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            if (!e || e.target.id === 'lightboxModal' || e.target.classList.contains('glass-modal-close')) {
+                const vidEl = document.getElementById('lightboxVideo');
+                if (vidEl) vidEl.pause();
+                document.getElementById('lightboxModal').classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

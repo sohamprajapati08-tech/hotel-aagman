@@ -1,0 +1,112 @@
+[
+  {
+    "id": "dish-1",
+    "name": "Special Gujarati Thali",
+    "category": "Thali",
+    "img": "gujrati tahli.jfif",
+    "price": 180,
+    "desc": "Authentic Kathiyawadi taste: 2 Sabzi, 4 Phulka Roti / Bhakhri, Dal, Rice, Salad, Pickle, Sweet & Fresh Papad.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-2",
+    "name": "Deluxe Punjabi Thali",
+    "category": "Thali",
+    "img": "panjabi tjhali.jfif",
+    "price": 220,
+    "desc": "Rich North Indian flavours: Paneer Sabzi, Dal Makhani, 2 Butter Naan / Paratha, Jeera Rice, Gulab Jamun & Raita.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-3",
+    "name": "Royal Rajasthani Thali",
+    "category": "Thali",
+    "img": "rj thali.jfif",
+    "price": 250,
+    "desc": "Traditional Marwadi feast: Dal Baati Churma, Gatte ki Sabzi, Ker Sangri, Bajra Roti with Pure Desi Ghee.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-4",
+    "name": "South Indian Platter",
+    "category": "South Indian",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.38 PM (1).jpeg",
+    "price": 160,
+    "desc": "Crispy Masala Dosa, 2 Steamed Idli, Medu Vada served with hot piping Sambhar and Coconut Chutney.",
+    "isVeg": true,
+    "popular": false
+  },
+  {
+    "id": "dish-5",
+    "name": "Paneer Butter Masala",
+    "category": "Punjabi Main",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.41 PM.jpeg",
+    "price": 190,
+    "desc": "Soft fresh cottage cheese cubes simmered in a velvety, buttery tomato cashew gravy.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-6",
+    "name": "Shahi Paneer",
+    "category": "Punjabi Main",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.38 PM.jpeg",
+    "price": 210,
+    "desc": "Royal mild preparation of paneer with rich cream, cardamom, and aromatic spices.",
+    "isVeg": true,
+    "popular": false
+  },
+  {
+    "id": "dish-7",
+    "name": "Butter Tandoori Roti",
+    "category": "Breads",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.40 PM (1).jpeg",
+    "price": 25,
+    "desc": "Crisp whole wheat flatbread freshly baked in clay tandoor and brushed with amul butter.",
+    "isVeg": true,
+    "popular": false
+  },
+  {
+    "id": "dish-8",
+    "name": "Spiced Missi Roti",
+    "category": "Breads",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.40 PM.jpeg",
+    "price": 35,
+    "desc": "Gram flour & wheat bread infused with carom seeds, onions, green chilies, and ghee.",
+    "isVeg": true,
+    "popular": false
+  },
+  {
+    "id": "dish-9",
+    "name": "Desi Masala Chaas",
+    "category": "Beverages",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.39 PM (1).jpeg",
+    "price": 30,
+    "desc": "Chilled traditional churned buttermilk with roasted cumin, mint, ginger, and black salt.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-10",
+    "name": "Paneer Tikka Kabab",
+    "category": "Starters",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.35 PM (1).jpeg",
+    "price": 220,
+    "desc": "Marinated paneer cubes skewered with bell peppers and onions, char-grilled to perfection in clay oven.",
+    "isVeg": true,
+    "popular": true
+  },
+  {
+    "id": "dish-11",
+    "name": "Dum Veg Biryani with Raita",
+    "category": "Rice & Biryani",
+    "img": "WhatsApp Image 2026-03-02 at 3.57.30 PM.jpeg",
+    "price": 180,
+    "desc": "Fragrant Basmati rice slow-cooked with fresh garden vegetables and saffron, served with cucumber raita.",
+    "isVeg": true,
+    "popular": true
+  }
+]

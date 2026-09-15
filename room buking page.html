@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Aagaman - Room Categories & Online Booking</title>
+    <!-- Meta SEO -->
+    <meta name="description" content="Book AC and Deluxe hotel rooms online at Hotel Aagaman, Kheralu. Best rates, instant confirmation, and real payment gateway.">
+    
+    <!-- Bootstrap & AOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Glassmorphism Theme -->
+    <link rel="stylesheet" href="glass.css">
+
+    <!-- Payment & Invoice Libraries -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        .rooms-header {
+            padding: 130px 20px 40px;
+            text-align: center;
+        }
+
+        .rooms-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 30px;
+            padding: 0 20px 70px;
+        }
+
+        .room-card-glass {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .room-img-box {
+            position: relative;
+            height: 230px;
+            overflow: hidden;
+        }
+
+        .room-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .room-card-glass:hover .room-img-box img {
+            transform: scale(1.08);
+        }
+
+        .room-category-pill {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(46, 71, 61, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            color: #F5F0E6;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .room-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .room-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .room-desc {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .room-amenities-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .amenity-tag {
+            background: rgba(46, 71, 61, 0.08);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+        }
+
+        .pricing-tier-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .tier-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tier-price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .tier-price.highlight {
+            color: var(--accent);
+        }
+
+        @media (max-width: 480px) {
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AMBIENT GLOW -->
+    <div class="ambient-glow-wrapper">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <div class="page-content">
+        <!-- FLOATING GLASS NAVBAR -->
+        <header class="glass-nav" id="mainNav">
+            <a href="index.html" class="nav-brand">
+                <span>HOTEL</span> AAGAMAN
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link-item">Home</a>
+                <a href="room buking page.html" class="nav-link-item active">Room Booking</a>
+                <a href="menu.html" class="nav-link-item">Menu & Dining</a>
+                <a href="gallary.html" class="nav-link-item">Gallery</a>
+                <a href="about.html" class="nav-link-item">About Us</a>
+                <a href="contact.html" class="nav-link-item">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <div id="navAuthContainer">
+                    <button class="btn-glass-primary btn-glass-sm" onclick="HotelAuth.showModal()">
+                        Login
+                    </button>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation">&#9776;</button>
+            </div>
+        </header>
+
+        <!-- ROOMS HEADER -->
+        <section class="rooms-header" data-aos="fade-down">
+            <div class="hero-badge" style="display:inline-block; margin-bottom:12px;">Exclusive Accommodations</div>
+            <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                Premium Room Categories
+            </h1>
+            <p style="color:var(--text-secondary); font-size:1.05rem; max-width:620px; margin:0 auto;">
+                Select your preferred room shift (Day, Night, or Full 24 Hours). Log in with Mobile or Email to guarantee your reservation.
+            </p>
+        </section>
+
+        <!-- ROOMS GRID (Loaded dynamically from /api/rooms) -->
+        <div class="rooms-grid" id="roomsContainer">
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px;">
+                Loading live room inventory...
+            </div>
+        </div>
+
+        <!-- GLASS BOOKING MODAL -->
+        <div class="glass-modal-overlay" id="roomBookingModal">
+            <div class="glass-modal-box" style="max-width: 540px;">
+                <button class="glass-modal-close" onclick="closeBookingModal()">&times;</button>
+
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <div style="color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Room Reservation</div>
+                    <h3 style="color:var(--text-primary); font-size:1.6rem;" id="modalRoomTitle">Book Room</h3>
+                    <p style="color:var(--text-secondary); font-size:0.85rem;" id="modalRoomCapacity">2 Guests Capacity</p>
+                </div>
+
+                <form id="bookingForm" onsubmit="processBooking(event)">
+                    <input type="hidden" id="selectedRoomId">
+                    <input type="hidden" id="selectedRoomName">
+
+                    <!-- Customer Info (Pre-filled from logged in user) -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="glass-form-group">
+                            <label class="glass-label">Your Name *</label>
+                            <input type="text" id="custName" class="glass-input" required>
+                        </div>
+                        <div class="glass-form-group">
+                            <label class="glass-label">Mobile Number *</label>
+                            <input type="tel" id="custMobile" class="glass-input" required>
+                        </div>
+                    </div>
+
+                    <div class="glass-form-group">
+                        <label class="glass-label">Email Address (for Invoice)</label>
+                        <input type="email" id="custEmail" class="glass-input" placeholder="name@example.com">
+                    </div>
+
+                    <!-- Booking Schedule -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="glass-form-group">
+                            <label class="glass-label">Check-in Date *</label>
+                            <input type="date" id="bookCheckIn" class="glass-input" required onchange="calculateTotal()">
+                        </div>
+                        <div class="glass-form-group">
+                            <label class="glass-label">Shift Duration *</label>
+                            <select id="bookShift" class="glass-select" onchange="calculateTotal()">
+                                <option value="full">Full 24 Hours</option>
+                                <option value="night">Night Only (8 PM - 8 AM)</option>
+                                <option value="day">Day Only (8 AM - 8 PM)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="glass-form-group">
+                            <label class="glass-label">Number of Guests</label>
+                            <select id="bookGuests" class="glass-select">
+                                <option value="1">1 Person</option>
+                                <option value="2" selected>2 Persons</option>
+                                <option value="3">3 Persons</option>
+                                <option value="4+">4+ Persons (Family)</option>
+                            </select>
+                        </div>
+                        <div class="glass-form-group">
+                            <label class="glass-label">Payment Option *</label>
+                            <select id="bookPaymentMethod" class="glass-select" onchange="togglePaymentUi()">
+                                <option value="online_upi" selected>Online UPI (GPay / PhonePe / Paytm)</option>
+                                <option value="cash_hotel">Pay Cash at Check-in</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC UPI QR PAYMENT BOX (Shown for Online Payment) -->
+                    <div id="upiPaymentBox" style="background: rgba(255, 255, 255, 0.9); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 18px; text-align: center; margin: 15px 0;">
+                        <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                            Scan & Pay with Any UPI App
+                        </div>
+                        <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 20px rgba(62, 39, 35, 0.12); margin-bottom: 12px; border: 1px solid var(--border-glass);">
+                            <img id="upiQrCodeImg" src="" alt="Hotel Aagaman UPI QR" style="width: 170px; height: 170px; display: block;">
+                        </div>
+                        <div style="color: var(--text-primary); font-size: 0.9rem; margin-bottom: 4px;">
+                            Payable Amount: <span id="upiAmountBadge" style="color: var(--accent); font-weight: 800; font-size: 1.2rem;">₹0</span>
+                        </div>
+                        <div style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 12px;">
+                            Hotel UPI ID: <strong id="displayHotelUpiId" style="color: var(--text-primary);">sohamprajapati08@okicici</strong>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="background: rgba(46,71,61,0.08); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; color: var(--text-primary);">Google Pay</span>
+                            <span style="background: rgba(46,71,61,0.08); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; color: var(--text-primary);">PhonePe</span>
+                            <span style="background: rgba(46,71,61,0.08); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; color: var(--text-primary);">Paytm</span>
+                            <span style="background: rgba(46,71,61,0.08); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; color: var(--text-primary);">BHIM</span>
+                        </div>
+                        <a id="mobileUpiIntentBtn" href="#" class="btn-glass-secondary" style="display: none; width: 100%; margin-bottom: 14px; font-size: 0.88rem; justify-content: center;">
+                            Open UPI App (GPay / PhonePe / Paytm)
+                        </a>
+                        <div class="glass-form-group" style="text-align: left; margin-top: 10px; margin-bottom: 0;">
+                            <label class="glass-label" style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">
+                                12-Digit UPI UTR / Transaction ID *
+                            </label>
+                            <input type="text" id="custUtrNumber" class="glass-input" placeholder="Enter 12-digit UTR from UPI app" maxlength="16" style="border-color: var(--border-glass); font-weight: 700; letter-spacing: 1.5px;">
+                            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
+                                Please complete payment via your UPI app and enter the 12-digit UTR reference number.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOTAL DISPLAY -->
+                    <div style="background: rgba(46, 71, 61, 0.06); border: 1px solid rgba(46, 71, 61, 0.15); border-radius: var(--radius-md); padding: 16px; text-align: center; margin: 15px 0 20px;">
+                        <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing: 0.5px;">Estimated Total Amount</div>
+                        <div style="font-size:2rem; font-weight:800; color:var(--primary); margin-top:2px;" id="modalTotalDisplay">₹0</div>
+                        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px;">* All taxes and services included</div>
+                    </div>
+
+                    <button type="submit" class="btn-glass-primary" id="btnConfirmBooking" style="width:100%; padding:14px; font-size:1.05rem;">
+                        Verify Payment & Confirm Reservation
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- GLASS BOOKING CONFIRMATION POPUP -->
+        <div class="glass-modal-overlay" id="successModal">
+            <div class="glass-modal-box" style="text-align:center;">
+                <div style="font-size:1.2rem; font-weight:800; color:var(--primary); letter-spacing:1px; margin-bottom:12px;">HOTEL AAGAMAN</div>
+                <h3 style="color:var(--primary); font-size:1.8rem; margin-bottom:8px;">Booking Confirmed</h3>
+                <p style="color:var(--text-secondary); font-size:0.95rem; margin-bottom:20px;">
+                    Thank you for choosing Hotel Aagaman. Your reservation has been secured.
+                </p>
+
+                <div style="background:rgba(255,255,255,0.85); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:18px; text-align:left; margin-bottom:20px; font-size:0.9rem;" id="successSummary">
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button class="btn-glass-primary" onclick="downloadPdfInvoice()">
+                        Download PDF Invoice
+                    </button>
+                    <button class="btn-glass-secondary" onclick="closeSuccessModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLASS FOOTER -->
+        <footer class="glass-footer">
+            <div class="glass-footer-grid">
+                <div>
+                    <h3 style="color:#fff; font-size:1.5rem; margin-bottom:15px;">HOTEL <span style="color:var(--accent);">AAGAMAN</span></h3>
+                    <p style="color:rgba(245, 240, 230, 0.8); line-height:1.7; font-size:0.95rem; margin-bottom:15px;">
+                        The finest rooms in Kheralu on Ambaji Highway with 24/7 check-in, pure dining, and modern hospitality.
+                    </p>
+                    <div style="color:rgba(245, 240, 230, 0.85); font-size:0.9rem; line-height: 1.8;">
+                        +91 6353848203<br>
+                        hotelaagaman08@gmail.com
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="room buking page.html">Room Booking</a>
+                    <a href="menu.html">Dining & Menu</a>
+                    <a href="gallary.html">Photo Gallery</a>
+                    <a href="about.html">About Hotel</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+
+                <div>
+                    <h4>Special Facilities</h4>
+                    <a href="room buking page.html">24/7 Room Service</a>
+                    <a href="room buking page.html">Air Conditioned Rooms</a>
+                    <a href="menu.html">Pure Veg Restaurant</a>
+                    <a href="room buking page.html">Free High-Speed Wi-Fi</a>
+                </div>
+
+                <div>
+                    <h4>Management</h4>
+                    <div style="color:#fff; font-weight:600; margin-bottom:8px;">Soham Prajapati</div>
+                    <div style="color:rgba(245, 240, 230, 0.75); font-size:0.85rem; line-height: 1.6;">
+                        Vrundavan Circle, Ambaji Highway, Kheralu - 384325
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-copyright">
+                © 2026 Hotel Aagaman. All Rights Reserved. Luxury Boutique Experience.
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="auth.js"></script>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('navLinks');
+            if (nav) nav.classList.toggle('show');
+        }
+
+        let loadedRooms = [];
+        let currentSelectedRoom = null;
+        let lastConfirmedBooking = null;
+
+        // Fetch rooms dynamically
+        async function fetchRooms() {
+            const container = document.getElementById('roomsContainer');
+            try {
+                let data = null;
+                try {
+                    const res = await fetch('/api/rooms');
+                    const contentType = res.headers.get('content-type') || '';
+                    if (res.ok && contentType.includes('application/json')) {
+                        data = await res.json();
+                    }
+                } catch (e) {}
+
+                if (!data || !data.rooms) {
+                    const staticRes = await fetch('data/rooms.json');
+                    const staticData = await staticRes.json();
+                    data = { rooms: staticData };
+                }
+
+                loadedRooms = data.rooms || [];
+
+                if (loadedRooms.length === 0) {
+                    container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text-muted);">No rooms currently available.</div>';
+                    return;
+                }
+
+                container.innerHTML = loadedRooms.map(r => {
+                    const isAvailable = r.available !== false;
+                    return `
+                    <div class="glass-card room-card-glass" data-aos="fade-up">
+                        <div class="room-img-box">
+                            <img src="${r.img || 'room.jpeg'}" alt="${r.name}" onerror="this.src='room.jpeg'">
+                            <span class="room-category-pill">${r.category || 'Luxury'}</span>
+                            <span style="position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 1px solid ${isAvailable ? 'rgba(46,71,61,0.3)' : 'rgba(200,112,91,0.3)'}; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; color: ${isAvailable ? '#2E473D' : '#C8705B'};">
+                                ${isAvailable ? 'Available' : 'Booked'}
+                            </span>
+                        </div>
+                        <div class="room-content">
+                            <div>
+                                <h3 class="room-name">${r.name}</h3>
+                                <p class="room-desc">${r.desc}</p>
+                                <div class="room-amenities-tags">
+                                    ${(r.amenities || ['Free Wi-Fi', 'AC', '24/7 Water']).map(a => `<span class="amenity-tag">${a}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="pricing-tier-table">
+                                    <div>
+                                        <div class="tier-label">Day</div>
+                                        <div class="tier-price">₹${r.day}</div>
+                                    </div>
+                                    <div>
+                                        <div class="tier-label">Night</div>
+                                        <div class="tier-price">₹${r.night}</div>
+                                    </div>
+                                    <div>
+                                        <div class="tier-label">24h Full</div>
+                                        <div class="tier-price highlight">₹${r.full}</div>
+                                    </div>
+                                </div>
+                                ${isAvailable ? `
+                                    <button class="btn-glass-primary" style="width:100%;" onclick="initiateRoomBooking('${r.id}')">
+                                        Book Room Now
+                                    </button>
+                                ` : `
+                                    <button class="btn-glass-secondary" style="width:100%; opacity:0.6; cursor:not-allowed;" disabled title="This room is currently occupied">
+                                        Currently Booked
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error("Room fetch error:", err);
+                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--accent);">Failed to load rooms. Please check connection.</div>';
+            }
+        }
+        fetchRooms();
+
+        let paymentConfig = {
+            upiId: '6353848203@upi',
+            upiName: 'Hotel Aagaman',
+            hasLiveRazorpay: false,
+            razorpayKey: ''
+        };
+
+        async function loadPaymentConfig() {
+            try {
+                const res = await fetch('/api/config/payment');
+                const data = await res.json();
+                if (data.success) {
+                    paymentConfig = data;
+                    const el = document.getElementById('displayHotelUpiId');
+                    if (el) el.textContent = paymentConfig.upiId;
+                    updateUpiQr();
+                }
+            } catch (e) {
+                console.log("Payment config load error:", e);
+            }
+        }
+        loadPaymentConfig();
+
+        function togglePaymentUi() {
+            const method = document.getElementById('bookPaymentMethod').value;
+            const upiBox = document.getElementById('upiPaymentBox');
+            const btn = document.getElementById('btnConfirmBooking');
+
+            if (method === 'online_upi') {
+                if (upiBox) upiBox.style.display = 'block';
+                if (btn) btn.innerHTML = 'Verify Payment & Confirm Reservation';
+                updateUpiQr();
+            } else {
+                if (upiBox) upiBox.style.display = 'none';
+                if (btn) btn.innerHTML = 'Confirm Reservation (Pay Cash at Hotel)';
+            }
+        }
+
+        function updateUpiQr() {
+            const amount = calculateTotal();
+            const badge = document.getElementById('upiAmountBadge');
+            const img = document.getElementById('upiQrCodeImg');
+            const intentBtn = document.getElementById('mobileUpiIntentBtn');
+            if (badge) badge.textContent = `₹${amount}`;
+
+            const roomName = currentSelectedRoom ? currentSelectedRoom.name : 'Room Reservation';
+            const upiId = paymentConfig.upiId || 'sohamprajapati08@okicici';
+            const upiName = paymentConfig.upiName || 'Hotel Aagaman';
+            const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Aagaman ' + roomName)}`;
+            
+            if (img) {
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
+            }
+
+            if (intentBtn) {
+                intentBtn.href = upiUrl;
+                if (window.innerWidth < 800 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    intentBtn.style.display = 'inline-flex';
+                } else {
+                    intentBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // MANDATORY LOGIN ENFORCEMENT ON BOOKING
+        function initiateRoomBooking(roomId) {
+            const room = loadedRooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            // Strict login check: User MUST login before booking modal opens
+            if (!HotelAuth.isLoggedIn()) {
+                HotelAuth.showToast('Please log in to make a room reservation.', 'info');
+                HotelAuth.showModal((user) => {
+                    openBookingModal(room, user);
+                });
+                return;
+            }
+
+            openBookingModal(room, HotelAuth.getUser());
+        }
+
+        function openBookingModal(room, user) {
+            // Strict login check
+            if (!HotelAuth.isLoggedIn()) {
+                HotelAuth.showToast('Please log in with your mobile number to continue.', 'info');
+                HotelAuth.showModal((loggedInUser) => {
+                    openBookingModal(room, loggedInUser);
+                });
+                return;
+            }
+
+            currentSelectedRoom = room;
+            document.getElementById('selectedRoomId').value = room.id;
+            document.getElementById('selectedRoomName').value = room.name;
+            document.getElementById('modalRoomTitle').textContent = room.name;
+            document.getElementById('modalRoomCapacity').textContent = room.capacity || '2 Guests';
+
+            // Auto-fill user information
+            const activeUser = user || HotelAuth.getUser();
+            if (activeUser) {
+                document.getElementById('custName').value = activeUser.name || '';
+                document.getElementById('custMobile').value = activeUser.mobile || activeUser.identifier || '';
+                document.getElementById('custEmail').value = activeUser.email || '';
+            }
+
+            // Clear previous UTR input
+            const utrInput = document.getElementById('custUtrNumber');
+            if (utrInput) {
+                utrInput.value = '';
+                utrInput.style.borderColor = 'rgba(200, 112, 91, 0.4)';
+                utrInput.style.boxShadow = 'none';
+            }
+
+            // Set default check-in to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookCheckIn').value = today;
+            document.getElementById('bookCheckIn').min = today;
+
+            calculateTotal();
+            togglePaymentUi();
+            document.getElementById('roomBookingModal').classList.add('active');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('roomBookingModal').classList.remove('active');
+        }
+
+        function calculateTotal() {
+            if (!currentSelectedRoom) return 0;
+            const shift = document.getElementById('bookShift').value;
+            let price = currentSelectedRoom.full;
+            if (shift === 'day') price = currentSelectedRoom.day;
+            if (shift === 'night') price = currentSelectedRoom.night;
+
+            document.getElementById('modalTotalDisplay').textContent = `₹${price}`;
+            const badge = document.getElementById('upiAmountBadge');
+            if (badge) badge.textContent = `₹${price}`;
+            return price;
+        }
+
+        // Process Booking & Real Payment
+        async function processBooking(e) {
+            e.preventDefault();
+
+            // Strict login guard
+            if (!HotelAuth.isLoggedIn() || !HotelAuth.getToken()) {
+                HotelAuth.showToast('Please log in to confirm your reservation.', 'error');
+                closeBookingModal();
+                HotelAuth.showModal();
+                return;
+            }
+
+            const btn = document.getElementById('btnConfirmBooking');
+            const amount = calculateTotal();
+            const shift = document.getElementById('bookShift').value;
+            const checkIn = document.getElementById('bookCheckIn').value;
+            const paymentMethod = document.getElementById('bookPaymentMethod').value;
+            const custName = document.getElementById('custName').value.trim();
+            const custMobile = document.getElementById('custMobile').value.trim();
+            const custEmail = document.getElementById('custEmail').value.trim();
+            const utrInput = document.getElementById('custUtrNumber');
+            const utr = utrInput ? utrInput.value.trim() : '';
+
+            // STRICT VALIDATION FOR ONLINE PAYMENT: MUST HAVE 12-DIGIT UTR
+            if (paymentMethod === 'online_upi') {
+                if (!utr || utr.length < 12) {
+                    HotelAuth.showToast('Please complete payment via UPI and enter the 12-digit UTR transaction number.', 'error');
+                    if (utrInput) {
+                        utrInput.focus();
+                        utrInput.style.borderColor = '#C8705B';
+                        utrInput.style.boxShadow = '0 0 12px rgba(200, 112, 91, 0.4)';
+                    }
+                    return; // STRICTLY STOP EXECUTION! DO NOT CONFIRM!
+                }
+            }
+
+            btn.textContent = 'Processing Reservation...';
+            btn.disabled = true;
+
+            const token = HotelAuth.getToken();
+
+            // 1. If Online UPI Payment Selected
+            if (paymentMethod === 'online_upi') {
+                try {
+                    const res = await fetch('/api/bookings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            type: 'room',
+                            itemDetails: { roomId: currentSelectedRoom.id, roomName: currentSelectedRoom.name },
+                            checkIn,
+                            shift,
+                            customerName: custName,
+                            customerMobile: custMobile,
+                            customerEmail: custEmail,
+                            totalAmount: amount,
+                            paymentMethod: 'Online UPI (Google Pay / PhonePe / Paytm)',
+                            paymentId: `UTR-${utr}`
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        lastConfirmedBooking = data.booking;
+                        closeBookingModal();
+                        showSuccessConfirmation(data.booking);
+                    } else {
+                        HotelAuth.showToast(data.message || 'Booking failed', 'error');
+                    }
+                } catch (err) {
+                    HotelAuth.showToast('Server error: Unable to process booking.', 'error');
+                } finally {
+                    btn.textContent = 'Verify Payment & Confirm Reservation';
+                    btn.disabled = false;
+                }
+                return;
+            }
+
+            // 2. If Cash Payment Selected (Pay Cash at Hotel Check-in)
+            if (paymentMethod === 'cash_hotel') {
+                try {
+                    const res = await fetch('/api/bookings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            type: 'room',
+                            itemDetails: { roomId: currentSelectedRoom.id, roomName: currentSelectedRoom.name },
+                            checkIn,
+                            shift,
+                            customerName: custName,
+                            customerMobile: custMobile,
+                            customerEmail: custEmail,
+                            totalAmount: amount,
+                            paymentMethod: 'Cash Payment (Pay at Hotel Check-in)',
+                            paymentId: 'CASH-AT-CHECKIN'
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        lastConfirmedBooking = data.booking;
+                        closeBookingModal();
+                        showSuccessConfirmation(data.booking);
+                    } else {
+                        HotelAuth.showToast(data.message || 'Booking failed', 'error');
+                    }
+                } catch (err) {
+                    HotelAuth.showToast('Server error: Unable to process booking.', 'error');
+                } finally {
+                    btn.textContent = 'Confirm Reservation (Pay Cash at Hotel)';
+                    btn.disabled = false;
+                }
+                return;
+            }
+        }
+
+        function showSuccessConfirmation(booking) {
+            const isCash = booking.paymentId === 'CASH-AT-CHECKIN' || (booking.paymentMethod && booking.paymentMethod.includes('Cash'));
+            const summary = document.getElementById('successSummary');
+            summary.innerHTML = `
+                <div style="margin-bottom:8px;"><strong>Booking Reference:</strong> <span style="color:var(--primary); font-weight:700;">${booking.id}</span></div>
+                <div style="margin-bottom:8px;"><strong>Guest Name:</strong> ${booking.customerName}</div>
+                <div style="margin-bottom:8px;"><strong>Room Category:</strong> ${booking.itemDetails?.roomName || 'Deluxe Room'}</div>
+                <div style="margin-bottom:8px;"><strong>Check-in Date:</strong> ${booking.checkIn} (${booking.shift})</div>
+                <div style="margin-bottom:8px;"><strong>Total Amount:</strong> ₹${booking.totalAmount}</div>
+                <div style="margin-bottom:8px;"><strong>Payment Method:</strong> ${booking.paymentMethod}</div>
+                <div style="margin-bottom:8px;"><strong>Payment Status:</strong> ${isCash ? '<span style="color:var(--accent); font-weight:700;">Pending (Pay at check-in)</span>' : '<span style="color:var(--primary); font-weight:700;">Confirmed (Paid via UPI)</span>'}</div>
+                <div><strong>Transaction ID:</strong> <code>${booking.paymentId}</code></div>
+            `;
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Generate official PDF Bill
+        function downloadPdfInvoice() {
+            if (!lastConfirmedBooking) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header
+            doc.setFillColor(46, 71, 61); // Emerald Green
+            doc.rect(0, 0, 210, 40, "F");
+            doc.setTextColor(245, 240, 230); // Warm Sand
+            doc.setFontSize(22);
+            doc.setFont("helvetica", "bold");
+            doc.text("HOTEL AAGAMAN", 105, 18, { align: "center" });
+
+            doc.setTextColor(220, 220, 220);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("Chandra Pushpa Shopping Centre, Vrundavan Circle, Kheralu, Gujarat - 384325", 105, 26, { align: "center" });
+            doc.text("Phone: +91 6353848203 | Email: hotelaagaman08@gmail.com", 105, 32, { align: "center" });
+
+            // Title
+            doc.setTextColor(62, 39, 35);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("OFFICIAL ROOM BOOKING INVOICE", 14, 52);
+
+            // Metadata
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            const isCash = lastConfirmedBooking.paymentId === 'CASH-AT-CHECKIN' || (lastConfirmedBooking.paymentMethod && lastConfirmedBooking.paymentMethod.includes('Cash'));
+            doc.text(`Booking ID: ${lastConfirmedBooking.id}`, 14, 60);
+            doc.text(`Date of Issue: ${new Date().toLocaleDateString()}`, 14, 66);
+            doc.text(`Payment Status: ${isCash ? 'Pending (Pay Cash at Hotel Check-in)' : 'Confirmed (PAID via Online UPI)'}`, 14, 72);
+            doc.text(`Transaction Ref: ${lastConfirmedBooking.paymentId}`, 14, 78);
+
+            // Customer details
+            doc.setFont("helvetica", "bold");
+            doc.text("Customer Information:", 130, 60);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${lastConfirmedBooking.customerName}`, 130, 66);
+            doc.text(`Mobile: ${lastConfirmedBooking.customerMobile}`, 130, 72);
+            doc.text(`Email: ${lastConfirmedBooking.customerEmail || 'N/A'}`, 130, 78);
+
+            // Table Header
+            doc.setFillColor(240, 240, 240);
+            doc.rect(14, 90, 182, 10, "F");
+            doc.setFont("helvetica", "bold");
+            doc.text("Description", 20, 96);
+            doc.text("Check-in", 90, 96);
+            doc.text("Duration", 130, 96);
+            doc.text("Amount (INR)", 165, 96);
+
+            // Table Row
+            doc.setFont("helvetica", "normal");
+            doc.text(lastConfirmedBooking.itemDetails?.roomName || "Deluxe AC Room", 20, 108);
+            doc.text(lastConfirmedBooking.checkIn, 90, 108);
+            doc.text(lastConfirmedBooking.shift.toUpperCase(), 130, 108);
+            doc.text(`Rs. ${lastConfirmedBooking.totalAmount}`, 165, 108);
+
+            doc.setDrawColor(200, 200, 200);
+            doc.line(14, 116, 196, 116);
+
+            // Total
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(`Grand Total: Rs. ${lastConfirmedBooking.totalAmount}/- ${isCash ? '(Payable at Check-in)' : '(PAID)'}`, 196, 128, { align: "right" });
+
+            // QR Code for authenticity verification
+            const qrCanvas = document.createElement("canvas");
+            new QRCode(qrCanvas, {
+                text: `HOTEL-AAGAMAN-VERIFIED:${lastConfirmedBooking.id}:${lastConfirmedBooking.totalAmount}`,
+                width: 100,
+                height: 100
+            });
+
+            setTimeout(() => {
+                try {
+                    const img = qrCanvas.querySelector("img") || qrCanvas.querySelector("canvas");
+                    if (img) doc.addImage(img, "PNG", 14, 140, 40, 40);
+                } catch(e) {}
+                doc.setFont("helvetica", "italic");
+                doc.setFontSize(10);
+                doc.setTextColor(120, 120, 120);
+                doc.text("Scan QR Code to verify booking authenticity at reception desk.", 60, 160);
+                doc.text("Thank you for choosing Hotel Aagaman! Have a pleasant stay.", 105, 270, { align: "center" });
+
+                doc.save(`Hotel_Aagaman_Booking_${lastConfirmedBooking.id}.pdf`);
+            }, 300);
+        }
+    </script>
+</body>
+</html>

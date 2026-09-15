@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: hotel-aagaman
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: hotel_aagaman_super_secret_jwt_key_2026
+      - key: ADMIN_USERNAME
+        value: Aagaman008
+      - key: ADMIN_PASSWORD
+        value: Aagaman@2008
+      - key: HOTEL_UPI_ID
+        value: sohamprajapati08@okicici
+      - key: HOTEL_UPI_NAME
+        value: Hotel Aagaman
+      - key: EMAIL_USER
+        value: sohamprajapati676@gmail.com
+      - key: EMAIL_PASS
+        value: trrn rljy hewf rkwa

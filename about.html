@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Aagaman - About Our Story & Legacy</title>
+    <!-- Meta SEO -->
+    <meta name="description" content="Learn more about Hotel Aagaman in Kheralu, Gujarat. Our story, hospitality values, founder Soham Prajapati, and pure vegetarian dining.">
+    
+    <!-- Bootstrap & AOS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Glassmorphism Theme -->
+    <link rel="stylesheet" href="glass.css">
+
+    <style>
+        .about-hero {
+            padding: 140px 20px 40px;
+            text-align: center;
+        }
+
+        .story-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 70px;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .story-img-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-glass);
+            height: 380px;
+        }
+
+        .story-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-text-card {
+            padding: 40px;
+        }
+
+        .owner-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .owner-card {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .owner-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #fff;
+            margin: 0 auto 18px;
+            box-shadow: 0 8px 25px rgba(46, 71, 61, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            .story-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AMBIENT GLOW -->
+    <div class="ambient-glow-wrapper">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <div class="page-content">
+        <!-- FLOATING GLASS NAVBAR -->
+        <header class="glass-nav" id="mainNav">
+            <a href="index.html" class="nav-brand">
+                <span>HOTEL</span> AAGAMAN
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link-item">Home</a>
+                <a href="room buking page.html" class="nav-link-item">Room Booking</a>
+                <a href="menu.html" class="nav-link-item">Menu & Dining</a>
+                <a href="gallary.html" class="nav-link-item">Gallery</a>
+                <a href="about.html" class="nav-link-item active">About Us</a>
+                <a href="contact.html" class="nav-link-item">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <div id="navAuthContainer">
+                    <button class="btn-glass-primary btn-glass-sm" onclick="HotelAuth.showModal()">
+                        Login
+                    </button>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation">&#9776;</button>
+            </div>
+        </header>
+
+        <!-- ABOUT HERO -->
+        <section class="about-hero" data-aos="fade-down">
+            <div class="hero-badge" style="display:inline-block; margin-bottom:12px;">Our Heritage & Vision</div>
+            <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+                Welcome to Hotel Aagaman
+            </h1>
+            <p style="color:var(--text-secondary); font-size:1.05rem; max-width:650px; margin:0 auto;">
+                A sanctuary of warmth, cleanliness, and authentic Indian hospitality on the holy highway to Ambaji.
+            </p>
+        </section>
+
+        <!-- STORY GRID 1 -->
+        <div class="story-container">
+            <div class="story-grid">
+                <div class="story-img-card" data-aos="fade-right">
+                    <img src="WhatsApp Image 2026-01-31 at 3.39.29 PM (1).jpeg" alt="Hotel Aagaman">
+                </div>
+                <div class="glass-card story-text-card" data-aos="fade-left">
+                    <div style="color:var(--primary); font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Who We Are</div>
+                    <h2 style="color:var(--text-primary); font-size:1.8rem; margin-bottom:15px;">Your Peaceful Home Away from Home</h2>
+                    <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:15px;">
+                        Founded with a steadfast commitment to genuine care, <strong>Hotel Aagaman</strong> has grown into Kheralu's most trusted sanctuary for spiritual pilgrims, traveling executives, and vacationing families.
+                    </p>
+                    <p style="color:var(--text-secondary); line-height:1.7;">
+                        Located directly on Ambaji Highway at Vrundavan Circle, we combine modern comforts—like premium air conditioning, 24/7 hot water, high-speed Wi-Fi, and real-time online reservations—with the timeless warmth of Indian hospitality: <em>"Atithi Devo Bhava"</em>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- STORY GRID 2: DINING -->
+            <div class="story-grid">
+                <div class="glass-card story-text-card" data-aos="fade-right">
+                    <div style="color:var(--primary); font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Pure Dining Culture</div>
+                    <h2 style="color:var(--text-primary); font-size:1.8rem; margin-bottom:15px;">100% Pure Desi Vegetarian Cuisine</h2>
+                    <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:15px;">
+                        Food at Hotel Aagaman is an experience of soul and devotion. Our kitchen uses only pure desi ghee, freshly ground spices, and handpicked local vegetables.
+                    </p>
+                    <ul style="color:var(--text-secondary); line-height:1.8; padding-left:20px;">
+                        <li>Authentic Kathiyawadi Gujarati Thali served with love</li>
+                        <li>Rich North Indian Punjabi curries and hot tandoori naan</li>
+                        <li>Crispy South Indian dosas and freshly churned masala chaas</li>
+                        <li>Hygienic family dining hall and fast parcel takeaway service</li>
+                    </ul>
+                </div>
+                <div class="story-img-card" data-aos="fade-left">
+                    <img src="WhatsApp Image 2026-01-31 at 3.39.29 PM.jpeg" alt="Restaurant Hall">
+                </div>
+            </div>
+
+            <!-- OWNERS / LEADERSHIP -->
+            <div style="text-align:center; margin-top:70px;" data-aos="fade-up">
+                <div class="hero-badge" style="display:inline-block; margin-bottom:12px;">Leadership</div>
+                <h2 style="color:var(--text-primary); font-size:2.2rem; font-weight:800; margin-bottom:10px;">Meet Our Founder</h2>
+                <p style="color:var(--text-secondary); font-size:1rem; max-width:550px; margin:0 auto 30px;">
+                    Committed to delivering unforgettable experiences and exemplary service every single day.
+                </p>
+
+                <div class="owner-card-grid" style="display: flex; justify-content: center;">
+                    <div class="glass-card owner-card" style="max-width: 460px; width: 100%;">
+                        <div class="owner-avatar">S</div>
+                        <h3 style="color:var(--text-primary); font-size:1.4rem; margin-bottom:5px;">Soham Prajapati</h3>
+                        <div style="color:var(--accent); font-weight:600; font-size:0.9rem; margin-bottom:12px;">Managing Director & Founder</div>
+                        <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6;">
+                            Dedicated to customer satisfaction, modern hospitality tech, and maintaining pristine cleanliness standards across Hotel Aagaman.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLASS FOOTER -->
+        <footer class="glass-footer">
+            <div class="glass-footer-grid">
+                <div>
+                    <h3 style="color:#fff; font-size:1.5rem; margin-bottom:15px;">HOTEL <span style="color:var(--accent);">AAGAMAN</span></h3>
+                    <p style="color:rgba(245, 240, 230, 0.8); line-height:1.7; font-size:0.95rem; margin-bottom:15px;">
+                        The preferred destination for travelers seeking peaceful AC rooms, warm family hospitality, and authentic Kathiyawadi cuisine.
+                    </p>
+                    <div style="color:rgba(245, 240, 230, 0.85); font-size:0.9rem; line-height: 1.8;">
+                        +91 6353848203<br>
+                        hotelaagaman08@gmail.com
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="room buking page.html">Room Booking</a>
+                    <a href="menu.html">Dining & Menu</a>
+                    <a href="gallary.html">Photo Gallery</a>
+                    <a href="about.html">About Hotel</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+
+                <div>
+                    <h4>Special Facilities</h4>
+                    <a href="room buking page.html">24/7 Room Service</a>
+                    <a href="room buking page.html">Air Conditioned Rooms</a>
+                    <a href="menu.html">Pure Veg Restaurant</a>
+                    <a href="room buking page.html">Free High-Speed Wi-Fi</a>
+                </div>
+
+                <div>
+                    <h4>Management</h4>
+                    <div style="color:#fff; font-weight:600; margin-bottom:8px;">Soham Prajapati</div>
+                    <div style="color:rgba(245, 240, 230, 0.75); font-size:0.85rem; line-height: 1.6;">
+                        Vrundavan Circle, Ambaji Highway, Kheralu - 384325
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-copyright">
+                © 2026 Hotel Aagaman. All Rights Reserved. Luxury Boutique Experience.
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="auth.js"></script>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('navLinks');
+            if (nav) nav.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

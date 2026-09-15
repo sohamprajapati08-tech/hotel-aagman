@@ -1,0 +1,62 @@
+[
+  {
+    "id": "BK-MTZU2PEO-579",
+    "userId": "user-1789296259310",
+    "type": "room",
+    "itemDetails": {},
+    "checkIn": "2026-09-13",
+    "checkOut": "",
+    "shift": "full",
+    "customerName": "Soham Prajapati",
+    "customerMobile": "6353848203",
+    "customerEmail": "",
+    "address": "",
+    "totalAmount": 2400,
+    "paymentMethod": "Online UPI (Google Pay / PhonePe / Paytm)",
+    "paymentId": "UTR-425890124589",
+    "paymentStatus": "Paid (Online UPI)",
+    "status": "Completed",
+    "createdAt": "2026-09-13T13:12:08.736Z",
+    "updatedAt": "2026-09-13T15:30:33.513Z"
+  },
+  {
+    "id": "BK-MTZU2PE5-765",
+    "userId": "user-1789296259310",
+    "type": "room",
+    "itemDetails": {},
+    "checkIn": "2026-09-13",
+    "checkOut": "",
+    "shift": "full",
+    "customerName": "Soham Prajapati",
+    "customerMobile": "6353848203",
+    "customerEmail": "",
+    "address": "",
+    "totalAmount": 2400,
+    "paymentMethod": "Cash Payment (Pay at Hotel Check-in)",
+    "paymentId": "CASH-AT-CHECKIN",
+    "paymentStatus": "Pending (Cash on Arrival)",
+    "status": "Pending Cash",
+    "createdAt": "2026-09-13T13:12:08.717Z"
+  },
+  {
+    "id": "BK-MTZTFNHQ-422",
+    "userId": "user-1789296259310",
+    "type": "room",
+    "itemDetails": {
+      "roomId": "room-2",
+      "roomName": "Deluxe Twin"
+    },
+    "checkIn": "2026-09-13",
+    "checkOut": "",
+    "shift": "full",
+    "customerName": "soham laljibhai prajapati",
+    "customerMobile": "6353848203",
+    "customerEmail": "",
+    "address": "",
+    "totalAmount": 2400,
+    "paymentMethod": "Instant UPI (Google Pay/PhonePe/Paytm)",
+    "paymentId": "UPI-MTZTFN4H",
+    "status": "Confirmed",
+    "createdAt": "2026-09-13T12:54:13.166Z"
+  }
+]

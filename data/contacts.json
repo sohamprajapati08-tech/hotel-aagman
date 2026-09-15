@@ -1,0 +1,20 @@
+[
+  {
+    "id": "MSG-MTZXZFBH",
+    "name": "Ramesh Patel",
+    "mobile": "9825123456",
+    "email": "ramesh@gmail.com",
+    "subject": "Room Booking & Tariff",
+    "message": "Need 2 AC Deluxe rooms for 3 days.",
+    "createdAt": "2026-09-13T15:01:34.157Z"
+  },
+  {
+    "id": "MSG-MTZXY4DY",
+    "name": "Bharat Bhai",
+    "mobile": "9898123456",
+    "email": "bharat@gmail.com",
+    "subject": "Room Booking",
+    "message": "Do you have 2 AC rooms available?",
+    "createdAt": "2026-09-13T15:00:33.334Z"
+  }
+]

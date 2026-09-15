@@ -1,0 +1,3 @@
+# Netlify Redirects / Reverse Proxy Configuration
+# If you deploy server.js to Render.com / Railway, uncomment the line below with your backend URL:
+# /api/*  https://your-backend-app.onrender.com/api/:splat  200
