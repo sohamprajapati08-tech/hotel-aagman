@@ -325,7 +325,10 @@
                 <div style="background:rgba(255,255,255,0.85); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:18px; text-align:left; margin-bottom:20px; font-size:0.9rem;" id="successSummary">
                 </div>
 
-                <div style="display:flex; gap:10px; justify-content:center;">
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                    <a id="btnSuccessWhatsApp" href="#" target="_blank" class="btn-glass-primary" style="background:#25D366; border-color:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                        📲 WhatsApp Confirmation
+                    </a>
                     <button class="btn-glass-primary" onclick="downloadPdfInvoice()">
                         Download PDF Invoice
                     </button>
@@ -688,7 +691,7 @@
                     if (data.success) {
                         lastConfirmedBooking = data.booking;
                         closeBookingModal();
-                        showSuccessConfirmation(data.booking);
+                        showSuccessConfirmation(data.booking, data.whatsappUrl);
                     } else {
                         HotelAuth.showToast(data.message || 'Booking failed', 'error');
                     }
@@ -727,7 +730,7 @@
                     if (data.success) {
                         lastConfirmedBooking = data.booking;
                         closeBookingModal();
-                        showSuccessConfirmation(data.booking);
+                        showSuccessConfirmation(data.booking, data.whatsappUrl);
                     } else {
                         HotelAuth.showToast(data.message || 'Booking failed', 'error');
                     }
@@ -741,7 +744,7 @@
             }
         }
 
-        function showSuccessConfirmation(booking) {
+        function showSuccessConfirmation(booking, whatsappUrl) {
             const isCash = booking.paymentId === 'CASH-AT-CHECKIN' || (booking.paymentMethod && booking.paymentMethod.includes('Cash'));
             const summary = document.getElementById('successSummary');
             summary.innerHTML = `
@@ -754,6 +757,19 @@
                 <div style="margin-bottom:8px;"><strong>Payment Status:</strong> ${isCash ? '<span style="color:var(--accent); font-weight:700;">Pending (Pay at check-in)</span>' : '<span style="color:var(--primary); font-weight:700;">Confirmed (Paid via UPI)</span>'}</div>
                 <div><strong>Transaction ID:</strong> <code>${booking.paymentId}</code></div>
             `;
+
+            const waBtn = document.getElementById('btnSuccessWhatsApp');
+            if (waBtn && whatsappUrl) {
+                waBtn.href = whatsappUrl;
+                waBtn.style.display = 'inline-flex';
+                // Automatically open WhatsApp so message is ready instantly on user's mobile
+                setTimeout(() => {
+                    try { window.open(whatsappUrl, '_blank'); } catch(e) {}
+                }, 600);
+            } else if (waBtn) {
+                waBtn.style.display = 'none';
+            }
+
             document.getElementById('successModal').classList.add('active');
         }
 

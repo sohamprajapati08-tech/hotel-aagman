@@ -970,10 +970,25 @@ app.post('/api/bookings', authenticateToken, (req, res) => {
         booking: formatBookingForSheet(booking)
     });
 
+    // ⚡ INSTANT AUTOMATIC NOTIFICATION: Dispatch SMS & Email immediately to customer
+    sendOrderStatusNotification(booking, booking.status).catch(err => {
+        console.warn('[Instant Notification Warning]:', err.message);
+    });
+
+    // Generate direct WhatsApp message & link for instant confirmation
+    const rawMob = String(booking.customerMobile || '').replace(/\D/g, '');
+    const cleanMob = rawMob.length === 12 && rawMob.startsWith('91') ? rawMob.slice(2) : rawMob;
+    const itemTitle = booking.itemDetails?.roomName || booking.itemDetails?.dishName || booking.itemDetails?.name || booking.type || 'Room / Dining';
+    const waText = `*Hotel Aagaman (Kheralu)*\n\nDear *${booking.customerName || 'Valued Guest'}*,\n\nYour reservation (*#${booking.id}*) is *CONFIRMED*!\n• Item: ${itemTitle}\n• Total Amount: ₹${booking.totalAmount}\n• Check-in: ${booking.checkIn || 'Today'}\n• Payment: ${booking.paymentMethod}\n\n*Hotel Location:* Near Vrundavan Circle, Ambaji Highway, Kheralu, Gujarat.\n*24/7 Helpline:* +91 6353848203\n\nThank you for choosing Hotel Aagaman!`;
+    const whatsappUrl = cleanMob.length === 10
+        ? `https://api.whatsapp.com/send?phone=91${cleanMob}&text=${encodeURIComponent(waText)}`
+        : `https://api.whatsapp.com/send?phone=916353848203&text=${encodeURIComponent(waText)}`;
+
     res.status(201).json({
         success: true,
         message: isCash ? 'Booking saved successfully (Pay cash upon arrival).' : 'Booking confirmed with online payment!',
-        booking
+        booking,
+        whatsappUrl
     });
 });
 

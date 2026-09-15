@@ -333,7 +333,10 @@
                 <div style="background:rgba(245,240,230,0.7); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:18px; text-align:left; margin-bottom:20px; font-size:0.9rem;" id="foodSuccessSummary">
                 </div>
 
-                <div style="display:flex; gap:10px; justify-content:center;">
+                <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                    <a id="btnFoodSuccessWhatsApp" href="#" target="_blank" class="btn-glass-primary" style="background:#25D366; border-color:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                        📲 WhatsApp Confirmation
+                    </a>
                     <button class="btn-glass-primary" onclick="downloadFoodInvoice()">
                         Download Food Bill
                     </button>
@@ -675,7 +678,7 @@
                     if (data.success) {
                         lastConfirmedFoodOrder = data.booking;
                         closeOrderModal();
-                        showFoodConfirmation(data.booking);
+                        showFoodConfirmation(data.booking, data.whatsappUrl);
                     } else {
                         HotelAuth.showToast(data.message || 'Order failed', 'error');
                     }
@@ -717,7 +720,7 @@
                     if (data.success) {
                         lastConfirmedFoodOrder = data.booking;
                         closeOrderModal();
-                        showFoodConfirmation(data.booking);
+                        showFoodConfirmation(data.booking, data.whatsappUrl);
                     } else {
                         HotelAuth.showToast(data.message || 'Order failed', 'error');
                     }
@@ -731,7 +734,7 @@
             }
         }
 
-        function showFoodConfirmation(b) {
+        function showFoodConfirmation(b, whatsappUrl) {
             const isCash = b.paymentId === 'CASH-AT-TABLE' || (b.paymentMethod && b.paymentMethod.includes('Cash'));
             const summary = document.getElementById('foodSuccessSummary');
             summary.innerHTML = `
@@ -744,6 +747,19 @@
                 <div style="margin-bottom:8px;"><strong>Payment Status:</strong> ${isCash ? '<span style="color:var(--accent); font-weight:700;">Pending (Pay at dining table)</span>' : '<span style="color:var(--primary); font-weight:700;">Paid (Verified UPI)</span>'}</div>
                 <div><strong>Transaction ID:</strong> <code>${b.paymentId}</code></div>
             `;
+
+            const waBtn = document.getElementById('btnFoodSuccessWhatsApp');
+            if (waBtn && whatsappUrl) {
+                waBtn.href = whatsappUrl;
+                waBtn.style.display = 'inline-flex';
+                // Automatically open WhatsApp so order confirmation is ready on mobile
+                setTimeout(() => {
+                    try { window.open(whatsappUrl, '_blank'); } catch(e) {}
+                }, 600);
+            } else if (waBtn) {
+                waBtn.style.display = 'none';
+            }
+
             document.getElementById('foodSuccessModal').classList.add('active');
         }
 
