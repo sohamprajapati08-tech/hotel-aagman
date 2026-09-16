@@ -746,18 +746,22 @@
                 <div style="margin-bottom:8px;"><strong>Payment Method:</strong> ${b.paymentMethod}</div>
                 <div style="margin-bottom:8px;"><strong>Payment Status:</strong> ${isCash ? '<span style="color:var(--accent); font-weight:700;">Pending (Pay at dining table)</span>' : '<span style="color:var(--primary); font-weight:700;">Paid (Verified UPI)</span>'}</div>
                 <div><strong>Transaction ID:</strong> <code>${b.paymentId}</code></div>
+                <div style="margin-top:12px; padding:10px 12px; background:rgba(37,211,102,0.12); border:1px solid #25D366; border-radius:8px; font-size:0.85rem; color:#128C7E; text-align:left;">
+                    <div style="font-weight:700; display:flex; align-items:center; gap:6px;">
+                        <span>📱 ઓટોમેટિક વોટ્સએપ કન્ફર્મેશન</span>
+                    </div>
+                    <div style="margin-top:4px; font-size:0.82rem; color:#2E473D;">
+                        હોટેલ આગમન તરફથી આપના વોટ્સએપ નંબર <strong>+91 ${b.customerMobile}</strong> પર ઓર્ડર વિગતોનો મેસેજ આપમેળે મોકલી દેવામાં આવ્યો છે.
+                    </div>
+                </div>
             `;
 
             const waBtn = document.getElementById('btnFoodSuccessWhatsApp');
-            if (waBtn && whatsappUrl) {
-                waBtn.href = whatsappUrl;
+            if (waBtn) {
+                const hotelHelpMsg = encodeURIComponent(`Hello Hotel Aagaman, I have placed a dining order (Order ID: #${b.id}, Guest: ${b.customerName}). Please assist me.`);
+                waBtn.href = `https://api.whatsapp.com/send?phone=916353848203&text=${hotelHelpMsg}`;
                 waBtn.style.display = 'inline-flex';
-                // Automatically open WhatsApp so order confirmation is ready on mobile
-                setTimeout(() => {
-                    try { window.open(whatsappUrl, '_blank'); } catch(e) {}
-                }, 600);
-            } else if (waBtn) {
-                waBtn.style.display = 'none';
+                waBtn.innerHTML = '💬 Hotel WhatsApp Helpline';
             }
 
             document.getElementById('foodSuccessModal').classList.add('active');

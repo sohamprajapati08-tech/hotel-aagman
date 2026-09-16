@@ -1,4 +1,11 @@
 {
   "googleSheetWebhookUrl": "",
-  "autoSyncDrive": false
+  "autoSyncDrive": false,
+  "whatsappProvider": "ultramsg",
+  "ultramsgInstanceId": "",
+  "ultramsgToken": "",
+  "greenApiInstanceId": "",
+  "greenApiToken": "",
+  "whatsappWebhookUrl": "",
+  "whatsappAutoSend": true
 }

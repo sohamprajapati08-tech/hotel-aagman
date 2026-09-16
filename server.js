@@ -975,14 +975,8 @@ app.post('/api/bookings', authenticateToken, (req, res) => {
         console.warn('[Instant Notification Warning]:', err.message);
     });
 
-    // Generate direct WhatsApp message & link for instant confirmation
-    const rawMob = String(booking.customerMobile || '').replace(/\D/g, '');
-    const cleanMob = rawMob.length === 12 && rawMob.startsWith('91') ? rawMob.slice(2) : rawMob;
-    const itemTitle = booking.itemDetails?.roomName || booking.itemDetails?.dishName || booking.itemDetails?.name || booking.type || 'Room / Dining';
-    const waText = `*Hotel Aagaman (Kheralu)*\n\nDear *${booking.customerName || 'Valued Guest'}*,\n\nYour reservation (*#${booking.id}*) is *CONFIRMED*!\n• Item: ${itemTitle}\n• Total Amount: ₹${booking.totalAmount}\n• Check-in: ${booking.checkIn || 'Today'}\n• Payment: ${booking.paymentMethod}\n\n*Hotel Location:* Near Vrundavan Circle, Ambaji Highway, Kheralu, Gujarat.\n*24/7 Helpline:* +91 6353848203\n\nThank you for choosing Hotel Aagaman!`;
-    const whatsappUrl = cleanMob.length === 10
-        ? `https://api.whatsapp.com/send?phone=91${cleanMob}&text=${encodeURIComponent(waText)}`
-        : `https://api.whatsapp.com/send?phone=916353848203&text=${encodeURIComponent(waText)}`;
+    // WhatsApp Help URL points directly to Hotel Aagaman Helpline (+91 6353848203)
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=916353848203&text=${encodeURIComponent(`Hello Hotel Aagaman, I have a question regarding my booking #${booking.id} (${booking.customerName || 'Guest'}).`)}`;
 
     res.status(201).json({
         success: true,
@@ -1006,7 +1000,101 @@ app.get('/api/admin/bookings', authenticateAdmin, (req, res) => {
     res.json({ success: true, bookings });
 });
 
-// Helper: Send Order Status Notification to Customer's Mobile (Fast2SMS & Email & WhatsApp link)
+// ==========================================
+// AUTOMATED WHATSAPP GATEWAY DISPATCH
+// ==========================================
+async function sendAutomatedWhatsAppMessage(mobileNumber, messageText) {
+    const rawMobile = String(mobileNumber || '').replace(/\D/g, '');
+    const cleanMobile = rawMobile.length === 12 && rawMobile.startsWith('91') ? rawMobile.slice(2) : rawMobile;
+    if (cleanMobile.length !== 10) {
+        console.warn('[WhatsApp Bot] Invalid 10-digit mobile number:', mobileNumber);
+        return { success: false, message: 'Invalid mobile number (Must be 10 digits)' };
+    }
+
+    const fullMobile = `91${cleanMobile}`;
+    const settings = readJson('settings.json', {});
+
+    if (settings.whatsappAutoSend === false) {
+        console.log('[WhatsApp Bot] Automated WhatsApp is disabled in settings.');
+        return { success: false, message: 'WhatsApp auto-send disabled' };
+    }
+
+    // 1. UltraMsg WhatsApp Gateway (https://ultramsg.com - scans QR code like WhatsApp Web)
+    const ultramsgInstance = (settings.ultramsgInstanceId || process.env.ULTRAMSG_INSTANCE_ID || '').trim();
+    const ultramsgToken = (settings.ultramsgToken || process.env.ULTRAMSG_TOKEN || '').trim();
+    if (ultramsgInstance && ultramsgToken) {
+        try {
+            console.log(`[WhatsApp Gateway] Dispatching automated message to +${fullMobile} via UltraMsg (${ultramsgInstance})...`);
+            const res = await fetch(`https://api.ultramsg.com/${ultramsgInstance}/messages/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    token: ultramsgToken,
+                    to: `+${fullMobile}`,
+                    body: messageText
+                })
+            });
+            const data = await res.json();
+            console.log(`[WhatsApp UltraMsg Response]:`, data);
+            return { success: true, provider: 'ultramsg', data };
+        } catch (err) {
+            console.error(`[WhatsApp UltraMsg Error]:`, err.message);
+            return { success: false, provider: 'ultramsg', error: err.message };
+        }
+    }
+
+    // 2. Green-API WhatsApp Gateway (https://green-api.com - Free developer tier)
+    const greenApiInstance = (settings.greenApiInstanceId || process.env.GREEN_API_INSTANCE_ID || '').trim();
+    const greenApiToken = (settings.greenApiToken || process.env.GREEN_API_TOKEN || '').trim();
+    if (greenApiInstance && greenApiToken) {
+        try {
+            console.log(`[WhatsApp Gateway] Dispatching automated message to ${fullMobile}@c.us via Green-API...`);
+            const res = await fetch(`https://api.green-api.com/waInstance${greenApiInstance}/sendMessage/${greenApiToken}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chatId: `${fullMobile}@c.us`,
+                    message: messageText
+                })
+            });
+            const data = await res.json();
+            console.log(`[WhatsApp Green-API Response]:`, data);
+            return { success: true, provider: 'green-api', data };
+        } catch (err) {
+            console.error(`[WhatsApp Green-API Error]:`, err.message);
+            return { success: false, provider: 'green-api', error: err.message };
+        }
+    }
+
+    // 3. Custom Webhook Gateway
+    const customWebhook = (settings.whatsappWebhookUrl || process.env.WHATSAPP_WEBHOOK_URL || '').trim();
+    if (customWebhook) {
+        try {
+            console.log(`[WhatsApp Gateway] Dispatching to custom webhook...`);
+            const res = await fetch(customWebhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: fullMobile,
+                    phone: fullMobile,
+                    message: messageText,
+                    hotel: 'Hotel Aagaman',
+                    timestamp: new Date().toISOString()
+                })
+            });
+            const data = await res.json();
+            return { success: true, provider: 'custom_webhook', data };
+        } catch (err) {
+            console.error(`[WhatsApp Custom Webhook Error]:`, err.message);
+            return { success: false, provider: 'custom_webhook', error: err.message };
+        }
+    }
+
+    console.log('[WhatsApp Gateway] No WhatsApp credentials configured yet in Settings or .env');
+    return { success: false, message: 'WhatsApp gateway not configured yet' };
+}
+
+// Helper: Send Order Status Notification to Customer's Mobile (Automated WhatsApp, Fast2SMS & Email)
 async function sendOrderStatusNotification(booking, newStatus) {
     const rawMobile = String(booking.customerMobile || '').replace(/\D/g, '');
     const cleanMobile = rawMobile.length === 12 && rawMobile.startsWith('91') ? rawMobile.slice(2) : rawMobile;
@@ -1022,14 +1110,25 @@ async function sendOrderStatusNotification(booking, newStatus) {
         statusEng = 'CANCELLED';
         whatsappMessage = `*Hotel Aagaman (Kheralu)*\n\nDear *${customerName}*,\n\nYour order / booking has been *CANCELLED*.\n\n*Booking Details:*\n• Booking ID: #${booking.id}\n• Item: ${itemName}\n\nIf you have any questions or need assistance, please contact us:\n*Helpline:* +91 6353848203\n\nHotel Aagaman, Kheralu.`;
     } else {
-        whatsappMessage = `*Hotel Aagaman (Kheralu)*\n\nDear *${customerName}*,\n\nYour booking (#${booking.id}) is *CONFIRMED*.\n• Item: ${itemName}\n• Total Amount: ₹${booking.totalAmount}\n\n*Location:* Near Vrundavan Circle, Ambaji Highway, Kheralu.\n*Helpline:* +91 6353848203\n\nThank you for choosing Hotel Aagaman.`;
+        whatsappMessage = `*Hotel Aagaman (Kheralu)*\n\nDear *${customerName}*,\n\nYour booking (#${booking.id}) is *CONFIRMED*!\n• Item: ${itemName}\n• Total Amount: ₹${booking.totalAmount}\n\n*Location:* Near Vrundavan Circle, Ambaji Highway, Kheralu.\n*Helpline:* +91 6353848203\n\nThank you for choosing Hotel Aagaman!`;
     }
 
     const smsMessage = `Hotel Aagaman: Dear ${customerName}, your booking #${booking.id} (${itemName}) is now ${statusEng}. Thank you! Helpline: +916353848203`;
 
-    const whatsappUrl = cleanMobile.length === 10 ? `https://api.whatsapp.com/send?phone=91${cleanMobile}&text=${encodeURIComponent(whatsappMessage)}` : '';
+    // WhatsApp URL for contacting the Hotel Helpline
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=916353848203&text=${encodeURIComponent(`Hello Hotel Aagaman, I have a question regarding my booking #${booking.id} (${customerName}).`)}`;
 
-    // 1. Fast2SMS Mobile SMS Gateway
+    // 1. ⚡ AUTOMATIC WHATSAPP BACKGROUND DISPATCH (Sent directly from Hotel's WhatsApp to Customer)
+    let whatsappResult = null;
+    if (cleanMobile.length === 10) {
+        try {
+            whatsappResult = await sendAutomatedWhatsAppMessage(cleanMobile, whatsappMessage);
+        } catch (waErr) {
+            console.error('[Automated WhatsApp Notification Error]:', waErr.message);
+        }
+    }
+
+    // 2. Fast2SMS Mobile SMS Gateway
     if (process.env.FAST2SMS_API_KEY && cleanMobile.length === 10) {
         try {
             const smsRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
@@ -1051,7 +1150,7 @@ async function sendOrderStatusNotification(booking, newStatus) {
         }
     }
 
-    // 2. Email Receipt / Status via Gmail SMTP
+    // 3. Email Receipt / Status via Gmail SMTP
     if (emailTransporter && booking.customerEmail && booking.customerEmail.includes('@')) {
         try {
             const sender = (process.env.EMAIL_USER || process.env.GMAIL_USER || 'hotelaagaman08@gmail.com').trim();
@@ -1082,7 +1181,7 @@ async function sendOrderStatusNotification(booking, newStatus) {
         }
     }
 
-    return { smsMessage, whatsappUrl, cleanMobile };
+    return { smsMessage, whatsappUrl, cleanMobile, whatsappResult };
 }
 
 app.put('/api/admin/bookings/:id/status', authenticateAdmin, async (req, res) => {
@@ -1400,6 +1499,88 @@ app.post('/api/admin/settings', authenticateAdmin, (req, res) => {
         message: 'Google Drive settings saved successfully.',
         settings
     });
+});
+
+// GET admin WhatsApp settings
+app.get('/api/admin/whatsapp-settings', authenticateAdmin, (req, res) => {
+    const settings = readJson('settings.json', {});
+    res.json({
+        success: true,
+        settings: {
+            whatsappProvider: settings.whatsappProvider || 'ultramsg',
+            ultramsgInstanceId: settings.ultramsgInstanceId || process.env.ULTRAMSG_INSTANCE_ID || '',
+            ultramsgToken: settings.ultramsgToken ? '••••••••' : (process.env.ULTRAMSG_TOKEN ? '••••••••' : ''),
+            hasUltramsgToken: Boolean(settings.ultramsgToken || process.env.ULTRAMSG_TOKEN),
+            greenApiInstanceId: settings.greenApiInstanceId || process.env.GREEN_API_INSTANCE_ID || '',
+            greenApiToken: settings.greenApiToken ? '••••••••' : (process.env.GREEN_API_TOKEN ? '••••••••' : ''),
+            hasGreenApiToken: Boolean(settings.greenApiToken || process.env.GREEN_API_TOKEN),
+            whatsappWebhookUrl: settings.whatsappWebhookUrl || process.env.WHATSAPP_WEBHOOK_URL || '',
+            whatsappAutoSend: settings.whatsappAutoSend !== false
+        }
+    });
+});
+
+// POST admin WhatsApp settings
+app.post('/api/admin/whatsapp-settings', authenticateAdmin, (req, res) => {
+    const {
+        whatsappProvider,
+        ultramsgInstanceId,
+        ultramsgToken,
+        greenApiInstanceId,
+        greenApiToken,
+        whatsappWebhookUrl,
+        whatsappAutoSend
+    } = req.body;
+
+    const settings = readJson('settings.json', {});
+
+    if (whatsappProvider !== undefined) settings.whatsappProvider = String(whatsappProvider).trim();
+    if (ultramsgInstanceId !== undefined) settings.ultramsgInstanceId = String(ultramsgInstanceId).trim();
+    if (ultramsgToken !== undefined && !String(ultramsgToken).includes('••••')) {
+        settings.ultramsgToken = String(ultramsgToken).trim();
+    }
+    if (greenApiInstanceId !== undefined) settings.greenApiInstanceId = String(greenApiInstanceId).trim();
+    if (greenApiToken !== undefined && !String(greenApiToken).includes('••••')) {
+        settings.greenApiToken = String(greenApiToken).trim();
+    }
+    if (whatsappWebhookUrl !== undefined) settings.whatsappWebhookUrl = String(whatsappWebhookUrl).trim();
+    if (whatsappAutoSend !== undefined) settings.whatsappAutoSend = Boolean(whatsappAutoSend);
+
+    writeJson('settings.json', settings);
+
+    res.json({
+        success: true,
+        message: 'WhatsApp Gateway settings saved successfully.',
+        settings
+    });
+});
+
+// POST admin test WhatsApp message
+app.post('/api/admin/test-whatsapp', authenticateAdmin, async (req, res) => {
+    const { testMobile } = req.body;
+    const cleanMobile = String(testMobile || '').replace(/\D/g, '');
+    const mob = cleanMobile.length === 12 && cleanMobile.startsWith('91') ? cleanMobile.slice(2) : cleanMobile;
+
+    if (mob.length !== 10) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number for testing.' });
+    }
+
+    const testMessage = `*Hotel Aagaman (Kheralu) - WhatsApp Gateway Test*\n\nNamaste! This is an automated test message from the Hotel Aagaman system.\n\n• Time: ${new Date().toLocaleString('en-IN')}\n• Helpline: +91 6353848203\n• Status: Automated WhatsApp Gateway is WORKING! ✅\n\nThank you, Hotel Aagaman.`;
+
+    try {
+        const result = await sendAutomatedWhatsAppMessage(mob, testMessage);
+        if (result.success) {
+            res.json({ success: true, message: `Test WhatsApp message sent successfully to +91 ${mob}!`, result });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: result.message || 'Failed to send WhatsApp message. Please check your Instance ID and Token.',
+                error: result.error
+            });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Server error testing WhatsApp: ' + err.message });
+    }
 });
 
 // POST manual sync to Google Drive / Sheets
