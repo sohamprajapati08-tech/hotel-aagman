@@ -122,6 +122,17 @@ const authenticateAdmin = (req, res, next) => {
 };
 
 // ==========================================
+// KEEP-ALIVE & HEALTH CHECK (Render 24/7 Awake)
+// ==========================================
+app.get('/ping', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'Hotel Aagaman server is active', timestamp: new Date().toISOString() });
+});
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', uptimeSeconds: Math.round(process.uptime()), timestamp: new Date().toISOString() });
+});
+
+// ==========================================
 // AUTHENTICATION ROUTES (Real Mobile SMS & Gmail)
 // ==========================================
 
@@ -1709,4 +1720,20 @@ app.listen(PORT, () => {
     console.log(`Admin Portal: http://localhost:${PORT}/admin`);
     console.log(`Admin User: ${ADMIN_USERNAME} | Pass: ${ADMIN_PASSWORD}`);
     console.log(`=================================================`);
+
+    // Render Keep-Alive: Ping itself periodically so Render stays warm
+    const externalUrl = process.env.RENDER_EXTERNAL_URL || process.env.APP_URL;
+    if (externalUrl) {
+        const PING_INTERVAL = 10 * 60 * 1000; // 10 minutes
+        setInterval(async () => {
+            try {
+                const pingUrl = `${externalUrl.replace(/\/$/, '')}/ping`;
+                const pingRes = await fetch(pingUrl);
+                console.log(`[Keep-Alive Ping] Pinged ${pingUrl} - Status: ${pingRes.status}`);
+            } catch (err) {
+                console.warn(`[Keep-Alive Ping Warning]:`, err.message);
+            }
+        }, PING_INTERVAL);
+        console.log(`[Keep-Alive] Configured for ${externalUrl} every 10 minutes.`);
+    }
 });
